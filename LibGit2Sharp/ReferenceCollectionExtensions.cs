@@ -38,7 +38,7 @@ namespace LibGit2Sharp
         /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
         /// <param name="name">The name of the reference to create.</param>
         /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
-        /// <param name="signature"></param>
+        /// <param name="signature">The identity used for updating the reflog</param>
         /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> when adding the <see cref="Reference"/></param>
         /// <param name="allowOverwrite">True to allow silent overwriting a potentially existing reference, false otherwise.</param>
         /// <returns>A new <see cref="Reference"/>.</returns>
@@ -77,11 +77,28 @@ namespace LibGit2Sharp
             return refsColl.Add(name, gitObject.Id, signature, logMessage, allowOverwrite);
         }
 
+        /// <summary>
+        /// Creates a direct or symbolic reference with the specified name and target
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="name">The name of the reference to create.</param>
+        /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
+        /// <param name="allowOverwrite">True to allow silent overwriting a potentially existing reference, false otherwise.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         public static Reference Add(this ReferenceCollection refsColl, string name, string canonicalRefNameOrObjectish, bool allowOverwrite = false)
         {
             return Add(refsColl, name, canonicalRefNameOrObjectish, null, null, allowOverwrite);
         }
 
+        /// <summary>
+        /// Creates a direct or symbolic reference with the specified name and target
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="name">The name of the reference to create.</param>
+        /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
+        /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> when adding the <see cref="Reference"/></param>
+        /// <param name="allowOverwrite">True to allow silent overwriting a potentially existing reference, false otherwise.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         [Obsolete("Prefer the overload that takes a signature and a message for the reflog.")]
         public static Reference Add(this ReferenceCollection refsColl, string name, string canonicalRefNameOrObjectish, bool allowOverwrite, string logMessage)
         {
@@ -94,8 +111,8 @@ namespace LibGit2Sharp
         /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
         /// <param name="directRef">The direct reference which target should be updated.</param>
         /// <param name="objectish">The revparse spec of the target.</param>
-        /// <param name="signature"></param>
-        /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> of the <paramref name="directRef"/> reference.</param>
+        /// <param name="signature">The identity used for updating the reflog</param>
+        /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/></param>
         /// <returns>A new <see cref="Reference"/>.</returns>
         public static Reference UpdateTarget(this ReferenceCollection refsColl, Reference directRef, string objectish, Signature signature, string logMessage)
         {
@@ -109,11 +126,26 @@ namespace LibGit2Sharp
             return refsColl.UpdateTarget(directRef, target.Id, signature, logMessage);
         }
 
+        /// <summary>
+        /// Updates the target of a direct reference.
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="directRef">The direct reference which target should be updated.</param>
+        /// <param name="objectish">The revparse spec of the target.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         public static Reference UpdateTarget(this ReferenceCollection refsColl, Reference directRef, string objectish)
         {
             return UpdateTarget(refsColl, directRef, objectish, null, null);
         }
 
+        /// <summary>
+        /// Updates the target of a direct reference.
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="directRef">The direct reference which target should be updated.</param>
+        /// <param name="objectish">The revparse spec of the target.</param>
+        /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> of the <paramref name="directRef"/> reference.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         [Obsolete("Prefer the overload that takes a signature and a message for the reflog.")]
         public static Reference UpdateTarget(this ReferenceCollection refsColl, Reference directRef, string objectish, string logMessage)
         {
@@ -150,7 +182,7 @@ namespace LibGit2Sharp
         /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
         /// <param name="name">The canonical name of the reference.</param>
         /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
-        /// <param name="signature"></param>
+        /// <param name="signature">The identity used for updating the reflog</param>
         /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> of the <paramref name="name"/> reference.</param>
         /// <returns>A new <see cref="Reference"/>.</returns>
         public static Reference UpdateTarget(this ReferenceCollection refsColl, string name, string canonicalRefNameOrObjectish, Signature signature, string logMessage)
@@ -189,11 +221,26 @@ namespace LibGit2Sharp
             throw new LibGit2SharpException(string.Format(CultureInfo.InvariantCulture, "Reference '{0}' has an unexpected type ('{1}').", name, reference.GetType()));
         }
 
+        /// <summary>
+        /// Updates the target of a reference.
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="name">The canonical name of the reference.</param>
+        /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         public static Reference UpdateTarget(this ReferenceCollection refsColl, string name, string canonicalRefNameOrObjectish)
         {
             return UpdateTarget(refsColl, name, canonicalRefNameOrObjectish, null, null);
         }
 
+        /// <summary>
+        /// Updates the target of a reference.
+        /// </summary>
+        /// <param name="refsColl">The <see cref="ReferenceCollection"/> being worked with.</param>
+        /// <param name="name">The canonical name of the reference.</param>
+        /// <param name="canonicalRefNameOrObjectish">The target which can be either the canonical name of a reference or a revparse spec.</param>
+        /// <param name="logMessage">The optional message to log in the <see cref="ReflogCollection"/> of the <paramref name="name"/> reference.</param>
+        /// <returns>A new <see cref="Reference"/>.</returns>
         [Obsolete("Prefer the overload that takes a signature and a message for the reflog.")]
         public static Reference UpdateTarget(this ReferenceCollection refsColl, string name, string canonicalRefNameOrObjectish, string logMessage)
         {

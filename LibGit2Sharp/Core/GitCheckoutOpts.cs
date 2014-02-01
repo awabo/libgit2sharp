@@ -143,6 +143,7 @@ namespace LibGit2Sharp.Core
         public IntPtr baseline;
         public IntPtr target_directory;
 
+        public IntPtr ancestor_label;
         public IntPtr our_label;
         public IntPtr their_label;
 

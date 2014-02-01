@@ -183,7 +183,7 @@ namespace LibGit2Sharp.Core
 
         public ushort ContextLines;
         public ushort InterhunkLines;
-        public ushort OidAbbrev;
+        public ushort IdAbbrev;
         public Int64 MaxSize;
         public IntPtr OldPrefixString;
         public IntPtr NewPrefixString;
@@ -204,13 +204,13 @@ namespace LibGit2Sharp.Core
     {
         GIT_DIFF_FLAG_BINARY = (1 << 0),
         GIT_DIFF_FLAG_NOT_BINARY = (1 << 1),
-        GIT_DIFF_FLAG_VALID_OID = (1 << 2),
+        GIT_DIFF_FLAG_VALID_ID = (1 << 2),
     }
 
     [StructLayout(LayoutKind.Sequential)]
     internal class GitDiffFile
     {
-        public GitOid Oid;
+        public GitOid Id;
         public IntPtr Path;
         public Int64 Size;
         public GitDiffFlags Flags;
