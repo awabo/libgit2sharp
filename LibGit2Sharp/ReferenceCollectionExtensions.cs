@@ -192,7 +192,7 @@ namespace LibGit2Sharp
 
             if (name == "HEAD")
             {
-                return refsColl.Add("HEAD", canonicalRefNameOrObjectish, true);
+                return refsColl.Add("HEAD", canonicalRefNameOrObjectish, signature, logMessage, true);
             }
 
             Reference reference = refsColl[name];

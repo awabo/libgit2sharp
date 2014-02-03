@@ -645,8 +645,7 @@ namespace LibGit2Sharp
             }
 
             Commit commit = obj.DereferenceToCommit(true);
-            Checkout(commit.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotifications, commit.Id.Sha, committishOrBranchSpec,
-                committishOrBranchSpec != "HEAD");
+            Checkout(commit.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotifications, commit.Id.Sha, committishOrBranchSpec);
 
             return Head;
         }
@@ -673,17 +672,15 @@ namespace LibGit2Sharp
                     "The tip of branch '{0}' is null. There's nothing to checkout.", branch.Name));
             }
 
-            var branchIsCurrentRepositoryHead = branch.IsCurrentRepositoryHead;
-
             if (!branch.IsRemote && !(branch is DetachedHead) &&
                 string.Equals(Refs[branch.CanonicalName].TargetIdentifier, branch.Tip.Id.Sha,
                 StringComparison.OrdinalIgnoreCase))
             {
-                Checkout(branch.Tip.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, branch.CanonicalName, branch.Name, !branchIsCurrentRepositoryHead);
+                Checkout(branch.Tip.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, branch.CanonicalName, branch.Name);
             }
             else
             {
-                Checkout(branch.Tip.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, branch.Tip.Id.Sha, branch.Name, !branchIsCurrentRepositoryHead);
+                Checkout(branch.Tip.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, branch.Tip.Id.Sha, branch.Name);
             }
 
             return Head;
@@ -702,7 +699,7 @@ namespace LibGit2Sharp
         /// <returns>The <see cref="Branch"/> that was checked out.</returns>
         public Branch Checkout(Commit commit, CheckoutModifiers checkoutModifiers, CheckoutProgressHandler onCheckoutProgress, CheckoutNotificationOptions checkoutNotificationOptions)
         {
-            Checkout(commit.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, commit.Id.Sha, commit.Id.Sha, true);
+            Checkout(commit.Tree, checkoutModifiers, onCheckoutProgress, checkoutNotificationOptions, commit.Id.Sha, commit.Id.Sha);
 
             return Head;
         }
@@ -726,13 +723,13 @@ namespace LibGit2Sharp
         /// <param name="checkoutNotificationOptions"><see cref="CheckoutNotificationOptions"/> to manage checkout notifications.</param>
         /// <param name="headTarget">Target for the new HEAD.</param>
         /// <param name="refLogHeadSpec">The spec which will be written as target in the reflog.</param>
-        /// <param name="writeReflogEntry">Will a reflog entry be created.</param>
+        /// <param name="signature">Indentification for use when updating the reflog.</param>
         private void Checkout(
             Tree tree,
             CheckoutModifiers checkoutModifiers,
             CheckoutProgressHandler onCheckoutProgress,
             CheckoutNotificationOptions checkoutNotificationOptions,
-            string headTarget, string refLogHeadSpec, bool writeReflogEntry)
+            string headTarget, string refLogHeadSpec, Signature signature = null)
         {
             var previousHeadName = Info.IsHeadDetached ? Head.Tip.Sha : Head.Name;
 
@@ -745,12 +742,8 @@ namespace LibGit2Sharp
 
             CheckoutTree(tree, null, opts);
 
-            Refs.UpdateTarget("HEAD", headTarget);
-
-            if (writeReflogEntry)
-            {
-                LogCheckout(previousHeadName, Head.Tip.Id, refLogHeadSpec);
-            }
+            Refs.UpdateTarget("HEAD", headTarget, signature,
+                string.Format("checkout: moving from {0} to {1}", previousHeadName, refLogHeadSpec));
         }
 
         /// <summary>
